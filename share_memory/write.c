@@ -56,6 +56,30 @@ void add_test_node(struct test *h, char *txt)
 	strcpy(temp->txt, txt);
 	head->nextid = shmid;
 }
+void del_test_node(struct test *h, char *txt)
+{
+	struct test *temp;
+	struct test *prev;
+	int shmid;
+	/* get head node */
+	if((temp = shmat(h->nextid, NULL, 0)) > 0){
+		printf("get head pointer %p\n", temp);
+	}
+
+	while (temp->nextid != 0) {
+		prev = temp;
+		if ((temp = shmat(temp->nextid, NULL, 0)) > 0) {
+			printf("get node pointer %p\n", temp);
+		}
+		if (!strcmp(temp->txt, txt)) {
+			printf("find the node that you want to del\n");
+			shmid = prev->nextid;
+			prev->nextid = temp->nextid;
+			shmctl(shmid, IPC_RMID, 0);
+			return;
+		}
+	}
+}
 
 void main(void)
 {
@@ -64,6 +88,9 @@ void main(void)
 	init_test_list(&head);
 	add_test_node(&head, "hello");
 	add_test_node(&head, "world");
-	
+	add_test_node(&head, "OK");
+	add_test_node(&head, "hanfushun");
+
+//	del_test_node(&head, "OK");	
 
 }
