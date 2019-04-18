@@ -24,13 +24,13 @@ void main(void)
 			return;
 		}
 	}
-	if((temp = shmat(shmid, NULL, 0)) > 0){
+	if((temp = shmat(shmid, NULL, 0)) == ((void *) -1)){
 		printf("temp = %p\n", temp);
 	}
 	printf("print txt = %s\n", temp->txt);
 	
 	while (temp->nextid != 0) {
-		if((temp = shmat(temp->nextid, NULL, 0)) > 0){
+		if((temp = shmat(temp->nextid, NULL, 0)) == ((void *) -1)){
 			printf("temp = %p\n", temp);
 		}
 		printf("print txt = %s\n", temp->txt);

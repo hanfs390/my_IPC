@@ -23,7 +23,7 @@ void init_test_list(struct test *h)
 			shmid = shmget(KEY, sizeof(struct test), 0664);
 		}
 	}
-	if((temp = shmat(shmid, NULL, 0)) > 0){
+	if((temp = shmat(shmid, NULL, 0)) == ((void *)-1)){
 		printf("temp = %p\n", temp);
 	}
 	temp->nextid = 0;
@@ -37,7 +37,7 @@ void add_test_node(struct test *h, char *txt)
 	struct test *temp;
 	int shmid;
 	/* get head node */
-	if((head = shmat(h->nextid, NULL, 0)) > 0){
+	if((head = shmat(h->nextid, NULL, 0)) == ((void *)-1)){
 		printf("get head pointer %p\n", head);
 	}
 	if ((shmid = shmget(0, sizeof(struct test), 0664)) < 0) {
@@ -48,7 +48,7 @@ void add_test_node(struct test *h, char *txt)
 
 	printf("new node id %d\n", shmid);
 
-	if ((temp = shmat(shmid, NULL, 0)) > 0) {
+	if ((temp = shmat(shmid, NULL, 0)) == ((void *)-1)) {
 		printf("get new node pointer %p\n", temp);
 	}
 
@@ -62,13 +62,13 @@ void del_test_node(struct test *h, char *txt)
 	struct test *prev;
 	int shmid;
 	/* get head node */
-	if((temp = shmat(h->nextid, NULL, 0)) > 0){
+	if((temp = shmat(h->nextid, NULL, 0)) == ((void *)-1)){
 		printf("get head pointer %p\n", temp);
 	}
 
 	while (temp->nextid != 0) {
 		prev = temp;
-		if ((temp = shmat(temp->nextid, NULL, 0)) > 0) {
+		if ((temp = shmat(temp->nextid, NULL, 0)) == ((void *)-1)) {
 			printf("get node pointer %p\n", temp);
 		}
 		if (!strcmp(temp->txt, txt)) {
